@@ -1,0 +1,349 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pesquisa Xtreme</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Montserrat:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F2F2F2; --surface:#FFFFFF; --ink:#0B0B0B; --muted:#4A4A4A; --line:#D4D4D4;
+  --accent:#A4511A; --accent-ink:#FFFFFF; --soft:#F6E6DC;
+  --good:#1F7A4D; --good-bg:#DDF1E6; --warn:#9A4A06; --warn-bg:#FBEBD3; --bad:#B42318; --bad-bg:#FBE1DE;
+  --f-display:"Space Grotesk","Arial Narrow",Arial,sans-serif;
+  --f-body:"Montserrat",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0B0B; --surface:#1A1A1A; --ink:#FFFFFF; --muted:#B8B8B8; --line:#3A3A3A;
+  --accent:#C76A2A; --accent-ink:#0B0B0B; --soft:#2A1A12;
+  --good:#5CC28F; --good-bg:#14301F; --warn:#E5A14B; --warn-bg:#35260F; --bad:#F0867C; --bad-bg:#3A1A17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0B0B; --surface:#1A1A1A; --ink:#FFFFFF; --muted:#B8B8B8; --line:#3A3A3A;
+  --accent:#C76A2A; --accent-ink:#0B0B0B; --soft:#2A1A12;
+  --good:#5CC28F; --good-bg:#14301F; --warn:#E5A14B; --warn-bg:#35260F; --bad:#F0867C; --bad-bg:#3A1A17; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);padding-inline:16px;padding-block:20px 64px}
+.wrap{max-width:720px;margin-inline:auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,6vw,40px);font-weight:700;line-height:1.05}
+h2{font-size:22px;font-weight:700;line-height:1.15}
+.brand{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.note{font-size:13px;color:var(--muted);margin:0}
+.lead{margin:0;color:var(--muted)}
+.prog{height:6px;background:var(--soft);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.progtxt{font:500 12px var(--f-mono);color:var(--muted);display:flex;justify-content:space-between}
+.q{display:flex;flex-direction:column;gap:8px;min-width:0}
+.q>label,.q>.lab{font-weight:600;font-size:15px}
+.opt{font-weight:400;font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 14px var(--f-body);padding:10px 14px;border-radius:8px;cursor:pointer;text-align:left;min-height:44px}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--soft);box-shadow:inset 0 0 0 1px var(--accent)}
+.scale{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.scale .chip{min-width:48px;text-align:center;padding-inline:0}
+.scalelab{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);gap:8px}
+input[type=text],input[type=number],textarea{font:16px var(--f-body);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+textarea{min-height:84px;resize:vertical}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 15px var(--f-body);padding:12px 18px;border-radius:8px;cursor:pointer;min-height:46px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn[disabled]{opacity:.5;cursor:default}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sw{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.swb{appearance:none;border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:stretch;font:600 14px var(--f-body);color:var(--ink)}
+.swb[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.swb .blk{height:84px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#C76A2A;font:700 28px var(--f-display)}
+.swdot{display:inline-block;width:18px;height:18px;border-radius:4px;vertical-align:-4px;margin-right:6px;border:1px solid var(--line)}
+.sig{border:1px solid var(--line);border-radius:10px;padding:14px;font:700 20px/1.2 var(--f-display);background:var(--surface)}
+.metodo{display:flex;border-radius:10px;overflow:hidden;height:84px;border:1px solid var(--line)}
+.metodo b{flex:1;display:flex;align-items:center;justify-content:center;font:700 14px var(--f-display);letter-spacing:.08em}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:14px}
+.consent input{width:22px;height:22px;margin-top:2px;flex:none}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:20;max-width:90vw}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line)}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);font:600 14px var(--f-body);padding:10px 12px;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.res{display:flex;flex-direction:column;gap:12px;min-width:0}
+.rrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:14px}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.quote{margin:0;padding:6px 10px;border-left:3px solid var(--line);color:var(--muted);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpis div{background:var(--surface);padding:12px 14px}
+.kpis small{display:block;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.kpis b{font:700 22px var(--f-display);font-variant-numeric:tabular-nums}
+.chipok{display:inline-block;padding:1px 8px;border-radius:99px;font:600 11px var(--f-mono);background:var(--soft)}
+.chipok.good{background:var(--good-bg);color:var(--good)} .chipok.warn{background:var(--warn-bg);color:var(--warn)} .chipok.bad{background:var(--bad-bg);color:var(--bad)}
+pre.copy{white-space:pre-wrap;word-break:break-word;font:13px/1.5 var(--f-mono);background:var(--soft);padding:12px;border-radius:8px;max-height:260px;overflow:auto;margin:0}
+</style>
+
+</head><body>
+<div class="wrap">
+  <header>
+    <div class="brand">Xtreme · pesquisa com alunas do Leo</div>
+    <h1>Roupa para treino de força</h1>
+    <p class="lead" style="margin-top:6px;font-size:18px">Queremos ouvir você</p>
+  </header>
+  <nav class="tabs" id="tabs" hidden role="tablist">
+    <button class="tab" role="tab" data-tab="form" aria-selected="true">Responder</button>
+    <button class="tab" role="tab" data-tab="res" aria-selected="false">Resultados</button>
+  </nav>
+  <main id="app"></main>
+</div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+  var ENDPOINT="https://script.google.com/macros/s/AKfycbzu4VcKkZQVtnEOPrSzP4HHg8tjJkWBzen5t13Do1rPPgdu-2lPimihr32761RoRAW9/exec";
+  /* ---------- helpers ---------- */
+  function $(i){return document.getElementById(i)}
+  function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+  function toast(m){var t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},3200)}
+  function num(v){var n=parseFloat(String(v==null?"":v).replace(",","."));return isFinite(n)?n:null}
+  function median(a){a=a.filter(function(x){return x!=null}).sort(function(x,y){return x-y});if(!a.length)return null;var m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2}
+  function mean(a){a=a.filter(function(x){return x!=null});return a.length?a.reduce(function(x,y){return x+y},0)/a.length:null}
+  function f1(n){return n==null?"—":n.toFixed(1).replace(".",",")}
+
+  /* ---------- dados da sessão (sorteios) ---------- */
+  var COR={terracota:"#8C4A2F",vinho:"#5C2A2E",oliva:"#4A4A2E"};
+  var SIG={A:"Feita para o treino. Pronta para o dia.",B:"Da série ao dia inteiro.",C:"Força para treinar. Leveza para viver."};
+  var sigOrd=shuffle(["A","B","C"]), corOrd=shuffle(["terracota","vinho","oliva"]), preco=Math.random()<.5?149:169, catDesc=Math.random()<.5?"A":"B";
+  var A={sigOrdem:sigOrd.join(""),corOrdem:corOrd.join(","),precoMostrado:preco,catDesc:catDesc};
+  var CAT={A:["Roupa de treino para o dia inteiro","Confortável no treino, prática na vida."],B:["Marca de moda para mulheres que treinam força","Peças pensadas para a rotina de quem treina."]};
+  function corN(k){return "Cor "+(corOrd.indexOf(k)+1)}
+  function corOpts(extra){var o=corOrd.map(function(k){return [k,corN(k)]});if(extra)o.push(extra);return o}
+
+  /* ---------- questionário ---------- */
+  var SECTIONS=[
+    {id:"s1",title:"Primeiro, sem pensar muito",intro:"Responda com o que vier à cabeça. Não existe resposta certa.",qs:[
+      {k:"imagina",t:"O que você imagina de uma marca de roupa de treino chamada Xtreme?",type:"text",ph:"Escreva com suas palavras"},
+      {k:"conhecia",t:"Você já conhecia a Xtreme?",type:"single",o:[["leo","Sim, pelo Leo"],["insta","Sim, pelo Instagram"],["outro","Sim, de outro lugar"],["nao","Não conhecia"]]}
+    ]},
+    {id:"s2",title:"Você e o seu treino",intro:"Para entender para quem estamos fazendo. Nada de nome ou dado de saúde.",qs:[
+      {k:"idade",t:"Qual a sua faixa de idade?",type:"single",opt:1,o:[["18-34","18 a 34"],["35-44","35 a 44"],["45-54","45 a 54"],["55+","55 ou mais"]]},
+      {k:"forca",t:"Quantas vezes por semana você faz treino de força?",type:"single",o:[["1","1 vez"],["2","2 vezes"],["3","3 vezes"],["4+","4 ou mais"]]},
+      {k:"tempoLeo",t:"Há quanto tempo você treina com o Leo?",type:"single",o:[["<6m","Menos de 6 meses"],["6-12m","6 a 12 meses"],["1-2a","1 a 2 anos"],[">2a","Mais de 2 anos"],["nao","Ainda não sou aluna dele"]]},
+      {k:"tamanho",t:"Que tamanho de short e de top você costuma usar?",type:"single",o:[["P","P"],["M","M"],["G","G"],["GG","GG"],["nsei","Não sei"]]},
+      {k:"rotina",t:"Como é o seu dia? (marque quantas quiser)",type:"multi",o:[["empresa","Trabalho em empresa"],["autonoma","Empreendo ou sou autônoma"],["filhos","Tenho filhos em casa"],["outra","Outra rotina"]]},
+      {k:"depois",t:"O que você costuma fazer logo depois do treino? (marque quantas quiser)",type:"multi",o:[["trabalho","Vou direto para o trabalho"],["casa","Vou para casa"],["filhos","Busco ou levo os filhos"],["rua","Resolvo coisas na rua ou no mercado"],["encontro","Encontro pessoas (café, reunião)"],["fico","Fico pela academia"]]}
+    ]},
+    {id:"s3",title:"A roupa de treino que você usa hoje",intro:"Fale da roupa, não de você. Crítica ajuda mais do que elogio.",qs:[
+      {k:"ultimoValor",t:"Quanto você pagou na última peça de treino que comprou (short, legging, top ou conjunto)?",type:"single",o:[["ate60","Até R$ 60"],["61-100","R$ 61 a R$ 100"],["101-150","R$ 101 a R$ 150"],["151-250","R$ 151 a R$ 250"],["250+","Mais de R$ 250"]]},
+      {k:"ondeCompra",t:"Onde você costuma comprar? (marque quantas quiser)",type:"multi",o:[["loja","Loja física de esporte"],["marca","Site de marca esportiva"],["moda","Loja de departamento ou moda"],["marketplace","Marketplace (Shopee, Mercado Livre...)"],["instagram","Marca pequena, pelo Instagram"],["outro","Outro"]]},
+      {k:"incomoda",t:"O que mais incomoda nas suas roupas de treino? (marque até 3)",type:"multi",max:3,o:[["calor","Esquenta demais"],["cintura","A cintura desce ou enrola"],["transparente","Fica transparente"],["atrito","Costura ou atrito marca a pele"],["desgaste","Desbota, faz bolinha ou perde a forma"],["tamanho","Não encontro meu tamanho"],["feia","Não dá para usar fora da academia"],["preco","Preço alto"],["nada","Nada me incomoda"]]},
+      {k:"satisf",t:"De 1 a 5, o quanto você está satisfeita com a roupa de treino que usa hoje?",type:"scale",lo:"Nada satisfeita",hi:"Muito satisfeita"},
+      {k:"troca",t:"Você troca de roupa depois do treino antes de seguir o seu dia?",type:"single",o:[["nunca","Nunca"],["as vezes","Às vezes"],["sempre","Quase sempre"]]},
+      {k:"trocaPorque",t:"Se troca, por quê?",type:"text",opt:1,ph:"Ex.: suor, aparência, conforto..."},
+      {k:"deixou",t:"Já parou de usar alguma peça de treino? O que aconteceu?",type:"text",opt:1}
+    ]},
+    {id:"s4",title:"Do treino ao resto do dia",intro:"Pense numa roupa de treino que você pudesse usar também fora da academia.",qs:[
+      {k:"foraUso",t:"Hoje, você usa roupa de treino fora do treino?",type:"single",o:[["sim","Sim, uso"],["usaria","Não, mas usaria se fosse a peça certa"],["separo","Não, prefiro separar"]]},
+      {k:"foraOnde",t:"Onde você usaria ou já usa? (marque quantas quiser)",type:"multi",o:[["trabalho","No trabalho"],["escola","Na escola dos filhos"],["mercado","No mercado"],["cafe","Em um café"],["casa","Em casa"],["outro","Outro lugar"]]},
+      {k:"aVontade",t:"De 1 a 5, o quanto você se sentiria à vontade com uma roupa de treino bonita fora da academia?",type:"scale",lo:"Nada à vontade",hi:"Muito à vontade"},
+      {k:"precisa",t:"O que a peça precisaria ter para você usar o dia inteiro? (marque até 3)",type:"multi",max:3,o:[["suor","Tecido que disfarça o suor"],["cor","Cor discreta"],["caimento","Cintura que fica no lugar"],["cobertura","Cobertura (sem transparência)"],["bolso","Bolso"],["comprimento","Comprimento do short"],["combina","Combinar com outras peças"],["leve","Tecido leve e fresco"]]},
+      {k:"naoFalta",t:"Qual peça você acredita que não pode faltar numa marca de moda fitness e wellness?",type:"text",opt:1,line:1,ph:"Ex.: legging, top, jaqueta..."}
+    ]},
+    {id:"s5",title:"Frases",intro:"Veja três frases que uma marca poderia usar. A ordem muda de pessoa para pessoa.",build:function(){
+      var qs=[];
+      qs.push({type:"info",html:sigOrd.map(function(k,i){return '<div class="sig"><span class="opt">Frase '+(i+1)+'</span><br>'+esc(SIG[k])+'</div>'}).join("")});
+      sigOrd.forEach(function(k,i){qs.push({k:"sig"+k,t:"Frase "+(i+1)+': de 1 a 5, o quanto você entendeu o que essa marca promete?',type:"scale",lo:"Não entendi",hi:"Entendi bem"})});
+      qs.push({k:"sigAmiga",t:"Qual frase você contaria a uma amiga?",type:"single",o:sigOrd.map(function(k,i){return [k,"Frase "+(i+1)]}).concat([["nenhuma","Nenhuma"]])});
+      qs.push({k:"sigDiz",t:"Em uma frase sua: o que essa marca promete?",type:"text",opt:1});
+      return qs}},
+    {id:"s6",title:"Cores",intro:"Três cores possíveis para uma linha de roupas. A cor muda de tela para tela, então olhe como uma ideia, não como o tom final.",build:function(){
+      var qs=[];
+      qs.push({type:"info",html:'<div class="sw">'+corOrd.map(function(k){return '<div class="swb" style="cursor:default"><div class="blk" style="background:'+COR[k]+'">X</div>'+corN(k)+'</div>'}).join("")+'</div>'});
+      qs.push({k:"corConforto",t:"Qual dessas cores passa mais conforto e sofisticação?",type:"swatch",o:corOpts()});
+      qs.push({k:"corMenos",t:"Qual combina menos com treino?",type:"swatch",o:corOpts()});
+      corOrd.forEach(function(k){qs.push({k:"lembra_"+k,t:'O que a <span class="swdot" style="background:'+COR[k]+'"></span>'+corN(k)+' lembra? <span class="opt">opcional</span>',type:"text",rawLabel:1,opt:1,ph:"Palavra ou frase curta"})});
+      qs.push({type:"info",html:'<p class="lab" style="margin:0;font-weight:600">Agora veja o cartão do Método do Leo (laranja e preto):</p><div class="metodo"><b style="background:#C76A2A;color:#0B0B0B">MÉTODO</b><b style="background:#0B0B0B;color:#C76A2A">XTREME</b></div>'});
+      qs.push({k:"corMarca",t:"Ao lado do cartão do Método, as três cores parecem:",type:"single",o:[["mesma","A mesma marca"],["irma","Uma marca irmã"],["outra","Outra marca"]]});
+      qs.push({k:"corCompraria",t:"Se tivesse que escolher uma para comprar, qual seria?",type:"swatch",opt:1,o:corOpts(["nenhuma","Nenhuma"])});
+      return qs}},
+    {id:"s6b",title:"Como a marca se apresenta",intro:"Veja uma forma de apresentar a marca e diga o que você achou.",qs:[
+      {type:"info",html:'<div class="sig">'+esc(CAT[catDesc][0])+'<div style="font:500 15px var(--f-body);margin-top:6px;color:var(--muted)">'+esc(CAT[catDesc][1])+'</div></div>'},
+      {k:"catInteresse",t:"O quanto essa marca te interessa?",type:"scale",lo:"Nada",hi:"Muito"},
+      {k:"catPremium",t:"O quanto ela parece uma marca premium?",type:"scale",lo:"Nada premium",hi:"Muito premium"},
+      {k:"catParaQuem",t:"Para quem você acha que essa marca é?",type:"text",opt:1,line:1}
+    ]},
+    {id:"s7",title:"Preço",intro:"Isto não é uma venda e ninguém vai cobrar nada. Queremos entender o que faz sentido para você.",qs:[
+      {k:"caro",t:"A partir de que valor um conjunto de short e top seria caro demais para você comprar? (R$)",type:"num"},
+      {k:"barato",t:"E a partir de que valor você desconfiaria da qualidade, por ser barato demais? (R$)",type:"num"},
+      {type:"info",html:'<div class="sig">Conjunto de short e top de treino por <b>R$ '+preco+'</b></div>'},
+      {k:"intencao",t:"Você compraria esse conjunto por R$ "+preco+"?",type:"single",o:[["sim","Sim"],["talvez","Talvez"],["nao","Não"]]},
+      {k:"parcelado",t:"Se fosse em 3 vezes, sua resposta mudaria?",type:"single",o:[["muda","Sim, mudaria"],["igual","Não mudaria"]]},
+      {k:"pedido",t:"Num primeiro pedido, o que você compraria?",type:"single",o:[["1conj","1 conjunto"],["2conj","2 conjuntos"],["3conj","3 ou mais conjuntos"],["top","Só o top"],["short","Só o short"],["nada","Nada por enquanto"]]},
+      {k:"confia",t:"O que faria você confiar numa marca nova de roupa de treino? (marque até 3)",type:"multi",max:3,o:[["teste","Resultado de teste divulgado"],["avaliacao","Avaliações de clientes"],["devolucao","Troca e devolução fáceis"],["medidas","Tabela de medidas detalhada"],["indic","Indicação do Leo"],["tecido","Informação clara do tecido"],["lavagem","Prova de que dura nas lavagens"]]}
+    ]},
+    {id:"s8",title:"Para terminar",intro:"Últimas perguntas e um aviso opcional.",qs:[
+      {k:"cidade",t:"Em que cidade você mora?",type:"text",opt:1,line:1},
+      {k:"aviso",t:"Quer ser avisada quando a pré-venda abrir?",type:"single",o:[["sim","Sim"],["nao","Não, obrigada"]]},
+      {k:"contato",t:"Seu WhatsApp ou e-mail, só para o aviso. Não é obrigatório e não vai para o resultado da pesquisa.",type:"text",opt:1,line:1,when:function(){return A.aviso==="sim"}},
+      {k:"livre",t:"Tem algo que a gente não perguntou e deveria ter perguntado?",type:"text",opt:1}
+    ]}
+  ];
+  function secQs(s){return s.build?s.build():s.qs}
+
+  /* ---------- estado ---------- */
+  var db=null, user=null, isAdmin=false, rows=[], loadedRows=false, step=-1, sent=false, tab="form", uid=null;
+  var consent=false;
+
+  /* ---------- render do formulário ---------- */
+  function renderQ(q){
+    if(q.type==="info")return '<div class="q">'+q.html+'</div>';
+    if(q.when&&!q.when())return "";
+    var lab=q.rawLabel?q.t:esc(q.t);
+    var optTag=(q.opt&&!q.rawLabel)?' <span class="opt">opcional</span>':"";
+    var h='<div class="q"><div class="lab">'+lab+optTag+'</div>';
+    var v=A[q.k];
+    if(q.type==="single"){
+      h+='<div class="chips" data-k="'+q.k+'">'+q.o.map(function(o){return '<button type="button" class="chip" data-v="'+esc(o[0])+'" aria-pressed="'+(v===o[0])+'">'+esc(o[1])+'</button>'}).join("")+'</div>';
+    }else if(q.type==="multi"){
+      v=v||[];
+      h+='<div class="chips" data-k="'+q.k+'" data-m="1" data-max="'+(q.max||0)+'">'+q.o.map(function(o){return '<button type="button" class="chip" data-v="'+esc(o[0])+'" aria-pressed="'+(v.indexOf(o[0])>=0)+'">'+esc(o[1])+'</button>'}).join("")+'</div>';
+    }else if(q.type==="scale"){
+      h+='<div class="scale" data-k="'+q.k+'">'+[1,2,3,4,5].map(function(n){return '<button type="button" class="chip" data-v="'+n+'" aria-pressed="'+(v===n)+'">'+n+'</button>'}).join("")+'</div><div class="scalelab"><span>1 · '+esc(q.lo)+'</span><span>5 · '+esc(q.hi)+'</span></div>';
+    }else if(q.type==="swatch"){
+      h+='<div class="sw" data-k="'+q.k+'">'+q.o.map(function(o){var c=COR[o[0]];return '<button type="button" class="swb" data-v="'+esc(o[0])+'" aria-pressed="'+(v===o[0])+'">'+(c?'<div class="blk" style="background:'+c+'">X</div>':'<div class="blk" style="background:var(--soft);color:var(--muted);font-size:16px">—</div>')+esc(o[1])+'</button>'}).join("")+'</div>';
+    }else if(q.type==="num"){
+      h+='<input type="number" inputmode="numeric" min="0" step="1" data-t="'+q.k+'" value="'+esc(v==null?"":v)+'" placeholder="R$">';
+    }else if(q.type==="text"){
+      h+=q.line?'<input type="text" data-t="'+q.k+'" value="'+esc(v||"")+'">':'<textarea data-t="'+q.k+'" placeholder="'+esc(q.ph||"")+'">'+esc(v||"")+'</textarea>';
+    }
+    return h+'</div>';
+  }
+  function progress(i){var total=SECTIONS.length;return '<div class="progtxt"><span>Parte '+(i+1)+' de '+total+'</span><span>cerca de '+Math.max(1,Math.round((total-i)*1.1))+' min</span></div><div class="prog"><i style="width:'+Math.round((i+1)/total*100)+'%"></i></div>'}
+  function renderForm(){
+    var el=$("app");
+    if(sent){
+      var txt=summaryText();
+      el.innerHTML='<div class="card"><h2>Obrigada!</h2><p class="lead">'+(db?"Suas respostas foram enviadas. Elas ajudam a decidir o que a gente vai produzir.":"Não foi possível enviar direto desta tela. Copie suas respostas abaixo e mande para o Leo ou para a Laís pelo WhatsApp.")+'</p>'+(db?"":'<pre class="copy" id="cp">'+esc(txt)+'</pre><button class="btn primary" id="copyBtn" type="button">Copiar respostas</button>')+'</div>';
+      var cb=$("copyBtn"); if(cb)cb.onclick=function(){try{navigator.clipboard.writeText(txt).then(function(){toast("Copiado.")},function(){selectCp()})}catch(e){selectCp()}};
+      return;
+    }
+    if(step<0){
+      el.innerHTML='<div class="card"><p class="lead">Estamos criando uma marca de moda para mulheres que treinam força. Antes de comprar qualquer peça, queremos ouvir quem treina de verdade. Leva cerca de 8 minutos.</p>'+
+        '<ul class="note" style="padding-left:18px;display:flex;flex-direction:column;gap:4px;font-size:14px"><li>Não existe resposta certa. Crítica ajuda mais do que elogio.</li><li>Isto não é uma venda: ninguém vai cobrar nada.</li><li>Não pedimos nome nem dado de saúde. Se quiser ser avisada da pré-venda, o contato é opcional e fica separado das respostas.</li><li>As respostas ficam com a equipe da Xtreme e servem só para decidir o que produzir. Você pode parar quando quiser.</li></ul>'+
+        '<label class="consent"><input type="checkbox" id="cons"'+(consent?" checked":"")+'><span>Entendi e aceito responder à pesquisa.</span></label>'+
+        '<div class="nav"><span></span><button class="btn primary" id="go" type="button"'+(consent?"":" disabled")+'>Começar</button></div></div>';
+      $("cons").onchange=function(){consent=this.checked;$("go").disabled=!consent};
+      $("go").onclick=function(){if(consent){step=0;renderForm();window.scrollTo(0,0)}};
+      return;
+    }
+    var s=SECTIONS[step], last=step===SECTIONS.length-1;
+    el.innerHTML='<div class="card">'+progress(step)+'<h2>'+esc(s.title)+'</h2><p class="lead">'+esc(s.intro)+'</p>'+secQs(s).map(renderQ).join("")+
+      '<div class="nav"><button class="btn" id="back" type="button">Voltar</button><button class="btn primary" id="next" type="button">'+(last?"Enviar respostas":"Continuar")+'</button></div></div>';
+    $("back").onclick=function(){step--;renderForm();window.scrollTo(0,0)};
+    $("next").onclick=function(){if(last)submit();else{step++;renderForm();window.scrollTo(0,0)}};
+  }
+  function selectCp(){var p=$("cp");if(!p)return;var r=document.createRange();r.selectNodeContents(p);var s=getSelection();s.removeAllRanges();s.addRange(r);toast("Selecione e copie o texto.")}
+  function allQs(){var out=[];SECTIONS.forEach(function(s){secQs(s).forEach(function(q){if(q.k)out.push(q)})});return out}
+  function labelOf(q,v){if(v==null||v==="")return "";var f=function(x){var o=(q.o||[]).filter(function(o){return o[0]===x})[0];return o?o[1]:x};return Array.isArray(v)?v.map(f).join(", "):(q.type==="single"||q.type==="swatch"?f(v):v)}
+  function plain(t){return String(t).replace(/<[^>]*>/g,"")}
+  function summaryText(){return "Pesquisa Xtreme\n"+allQs().map(function(q){var v=labelOf(q,A[q.k]);return v===""||v==null?null:plain(q.t)+" "+v}).filter(Boolean).join("\n")}
+
+  document.addEventListener("click",function(ev){
+    var t=ev.target.closest(".chip,.swb,.tab"); if(!t)return;
+    if(t.classList.contains("tab")){setTab(t.dataset.tab);return}
+    var box=t.parentElement; if(!box||!box.dataset.k)return;
+    var k=box.dataset.k, v=t.dataset.v;
+    if(box.dataset.m){
+      var cur=(A[k]||[]).slice(), i=cur.indexOf(v), max=parseInt(box.dataset.max,10)||0;
+      if(i>=0)cur.splice(i,1); else{ if(max&&cur.length>=max){toast("Marque até "+max+".");return} cur.push(v)}
+      A[k]=cur;
+    }else{
+      var val=box.classList.contains("scale")?parseInt(v,10):v;
+      A[k]=(A[k]===val)?null:val;
+    }
+    var sy=window.scrollY; renderForm(); window.scrollTo(0,sy);
+  });
+  document.addEventListener("input",function(ev){var t=ev.target;if(t.dataset&&t.dataset.t){A[t.dataset.t]=t.type==="number"?num(t.value):t.value}});
+
+  /* ---------- envio ---------- */
+  function submit(){
+    var b=$("next"); b.disabled=true;
+    var d={}; Object.keys(A).forEach(function(k){var v=A[k];if(v!==null&&v!==undefined&&v!==""&&!(Array.isArray(v)&&!v.length))d[k]=v});
+    if(d.aviso!=="sim")delete d.contato;
+    d.enviadoEm=Date.now();
+    var contato=d.contato; delete d.contato;
+    if(!db){sent=true;renderForm();return}
+    var payload={id:uid,dados:d,aviso:contato?{contato:contato}:null};
+    fetch(ENDPOINT,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)})
+      .then(function(){sent=true;renderForm()})
+      .catch(function(){b.disabled=false;toast("Não foi possível enviar. Verifique a internet e tente de novo.")});
+  }
+
+  /* ---------- resultados (quem administra) ---------- */
+  function cntBy(k,v,multi){return rows.filter(function(r){return multi?(r[k]||[]).indexOf(v)>=0:r[k]===v}).length}
+  function barRows(q){
+    var n=rows.filter(function(r){var v=r[q.k];return v!=null&&(!Array.isArray(v)||v.length)}).length||0;
+    return '<div class="res">'+q.o.map(function(o){var c=cntBy(q.k,o[0],q.type==="multi");return '<div class="rrow"><span>'+esc(o[1])+'</span><div class="bar"><i style="width:'+(n?Math.round(c/n*100):0)+'%"></i></div><span style="text-align:right;font-variant-numeric:tabular-nums">'+c+'</span></div>'}).join("")+'<span class="note">'+n+' respostas</span></div>';
+  }
+  var RQ=[]; // perguntas fixas para o resumo (sem os sorteios)
+  function fixedQs(){
+    var out=[]; SECTIONS.forEach(function(s){ if(s.qs)s.qs.forEach(function(q){if(q.k)out.push(q)}) }); return out;
+  }
+  function renderRes(){
+    var el=$("app");
+    if(!loadedRows){el.innerHTML='<div class="card">Carregando…</div>';return}
+    var n=rows.length;
+    var sig={A:0,B:0,C:0,nenhuma:0}; rows.forEach(function(r){if(sig[r.sigAmiga]!=null)sig[r.sigAmiga]++});
+    var sigMap=function(){return rows};
+    // sigAmiga guarda a chave da frase (A/B/C): ok, independe da ordem sorteada
+    var cc={terracota:0,vinho:0,oliva:0}, cm={terracota:0,vinho:0,oliva:0}; rows.forEach(function(r){if(cc[r.corConforto]!=null)cc[r.corConforto]++;if(cm[r.corMenos]!=null)cm[r.corMenos]++});
+    var ccN=cc.terracota+cc.vinho+cc.oliva, warm=cc.terracota+cc.vinho, oliTop=cc.oliva>=Math.max(cc.terracota,cc.vinho);
+    var irma=cntBy("corMarca","irma"), marcaN=rows.filter(function(r){return r.corMarca}).length;
+    var p={149:{n:0,sim:0,talvez:0},169:{n:0,sim:0,talvez:0}}; rows.forEach(function(r){var a=p[r.precoMostrado];if(a&&r.intencao){a.n++;if(r.intencao==="sim")a.sim++;if(r.intencao==="talvez")a.talvez++}});
+    var caro=rows.map(function(r){return num(r.caro)}), barato=rows.map(function(r){return num(r.barato)});
+    var incomoda=SECTIONS[2].qs[2];
+    var cv=function(v){var g=rows.filter(function(r){return r.catDesc===v});return {n:g.length,int:mean(g.map(function(r){return num(r.catInteresse)})),pre:mean(g.map(function(r){return num(r.catPremium)})),caro:median(g.map(function(r){return num(r.caro)})),barato:median(g.map(function(r){return num(r.barato)})),sim:g.filter(function(r){return r.intencao==="sim"}).length,ni:g.filter(function(r){return r.intencao}).length}};
+    var kp='<div class="kpis"><div><small>Respostas</small><b>'+n+'</b></div><div><small>Querem aviso</small><b>'+cntBy("aviso","sim")+'</b></div><div><small>Ainda não são alunas</small><b>'+cntBy("tempoLeo","nao")+'</b></div><div><small>Usam fora do treino</small><b>'+cntBy("foraUso","sim")+'</b></div></div>';
+    var s=function(t){return '<div class="card"><h2 style="font-size:18px">'+t+'</h2>'};
+    var html=kp+
+      '<div class="card"><p class="note">Quem responde é aluna do Leo: tende a avaliar melhor do que o público em geral. Os números dão direção, não prova. A demanda real só aparece quando alguém paga, na pré-venda.</p></div>'+
+      s("O que mais incomoda hoje")+barRows(incomoda)+'</div>'+
+      s("Cor")+
+        '<div class="res"><span class="note">Mais conforto e sofisticação: terracota '+cc.terracota+' · vinho '+cc.vinho+' · oliva '+cc.oliva+' · '+(ccN<10?'<span class="chipok warn">Em andamento</span>':((warm>=12&&!oliTop)?'<span class="chipok good">Passa em H9</span>':(ccN>=20?'<span class="chipok bad">Não passa em H9</span>':'<span class="chipok warn">Em andamento</span>')))+'</span>'+
+        '<span class="note">Combina menos com treino: terracota '+cm.terracota+' · vinho '+cm.vinho+' · oliva '+cm.oliva+'</span>'+
+        '<span class="note">Ao lado do Método: marca irmã '+irma+' de '+marcaN+' · mesma '+cntBy("corMarca","mesma")+' · outra '+cntBy("corMarca","outra")+' · '+(marcaN<10?'<span class="chipok warn">Em andamento</span>':(irma>=12?'<span class="chipok good">Passa em H10</span>':(marcaN>=20?'<span class="chipok bad">Não passa em H10</span>':'<span class="chipok warn">Em andamento</span>')))+'</span>'+
+        ["terracota","vinho","oliva"].map(function(k){var q=rows.filter(function(r){return r["lembra_"+k]}).map(function(r){return '<p class="quote">'+esc(r["lembra_"+k])+'</p>'}).join("");return '<h3 style="font-size:14px"><span class="swdot" style="background:'+COR[k]+'"></span>O que a '+k+' lembra</h3>'+(q||'<p class="note">Nenhuma resposta ainda.</p>')}).join("")+'</div></div>'+
+      s("Frases")+'<div class="res"><span class="note">Qual contaria a uma amiga: A '+sig.A+' · B '+sig.B+' · C '+sig.C+' · nenhuma '+sig.nenhuma+'</span>'+
+        ["A","B","C"].map(function(k){return '<span class="note">'+esc(SIG[k])+': entendimento médio '+f1(mean(rows.map(function(r){return num(r["sig"+k])})))+' de 5</span>'}).join("")+'</div></div>'+
+      s("Preço")+'<div class="res"><span class="note">"Caro demais": mediana R$ '+(median(caro)==null?"—":median(caro))+' · "barato demais": mediana R$ '+(median(barato)==null?"—":median(barato))+'</span>'+
+        [149,169].map(function(v){var a=p[v];return '<span class="note">Mostrado R$ '+v+': '+a.sim+' sim e '+a.talvez+' talvez de '+a.n+'</span>'}).join("")+'</div>'+barRows(SECTIONS[7].qs[5])+'</div>'+
+      s("Como a marca se apresenta (A contra B)")+'<div class="res"><span class="note">Quem viu cada versão respondeu também ao preço. Com poucas respostas por grupo, isto dá direção, não conclusão.</span>'+
+        ["A","B"].map(function(v){var c=cv(v);return '<div class="rrow" style="grid-template-columns:1fr"><b>'+esc(CAT[v][0])+'</b><span class="note">'+c.n+' respostas · interesse '+f1(c.int)+' de 5 · premium '+f1(c.pre)+' de 5 · "caro demais" mediana R$ '+(c.caro==null?"—":c.caro)+' · "barato demais" mediana R$ '+(c.barato==null?"—":c.barato)+' · compraria: '+c.sim+' sim de '+c.ni+'</span>'+
+          rows.filter(function(r){return r.catDesc===v&&r.catParaQuem}).map(function(r){return '<p class="quote">'+esc(r.catParaQuem)+'</p>'}).join("")+'</div>'}).join("")+'</div></div>'+
+      s("Tamanho")+barRows(SECTIONS[1].qs[3])+'</div>'+
+      s("Uso fora do treino")+barRows(SECTIONS[3].qs[0])+barRows(SECTIONS[3].qs[3])+'</div>'+
+      s("Palavras livres")+'<div class="res"><h3 style="font-size:14px">Xtreme imagina</h3>'+(rows.filter(function(r){return r.imagina}).map(function(r){return '<p class="quote">'+esc(r.imagina)+'</p>'}).join("")||'<p class="note">Nenhuma ainda.</p>')+
+        '<h3 style="font-size:14px">Peça que não pode faltar</h3>'+(rows.filter(function(r){return r.naoFalta}).map(function(r){return '<p class="quote">'+esc(r.naoFalta)+'</p>'}).join("")||'<p class="note">Nenhuma ainda.</p>')+
+        '<h3 style="font-size:14px">Por que troca de roupa</h3>'+(rows.filter(function(r){return r.trocaPorque}).map(function(r){return '<p class="quote">'+esc(r.trocaPorque)+'</p>'}).join("")||'<p class="note">Nenhuma ainda.</p>')+
+        '<h3 style="font-size:14px">Outras observações</h3>'+(rows.filter(function(r){return r.livre}).map(function(r){return '<p class="quote">'+esc(r.livre)+'</p>'}).join("")||'<p class="note">Nenhuma ainda.</p>')+'</div></div>'+
+      '<div class="nav"><span class="note">Contatos da lista de aviso ficam em outra coleção, separada das respostas.</span><button class="btn" id="csv" type="button">Baixar CSV das respostas</button></div>';
+    el.innerHTML=html;
+    $("csv").onclick=downloadCsv;
+  }
+  function downloadCsv(){
+    claude.use("downloads").then(function(d){
+      if(!d){toast("Download indisponível aqui.");return}
+      var keys={}; rows.forEach(function(r){Object.keys(r).forEach(function(k){if(k!=="id")keys[k]=1})});
+      var cols=Object.keys(keys).sort();
+      var q=function(v){if(Array.isArray(v))v=v.join(";");v=v==null?"":String(v);return '"'+v.replace(/"/g,'""')+'"'};
+      var csv=cols.map(q).join(",")+"\n"+rows.map(function(r){return cols.map(function(c){return q(r[c])}).join(",")}).join("\n");
+      return d.save({filename:"pesquisa-xtreme.csv",data:csv}).then(function(){toast("Arquivo salvo.")});
+    }).catch(function(){toast("Não foi possível baixar.")});
+  }
+
+  function setTab(t){
+    tab=t; Array.prototype.forEach.call(document.querySelectorAll(".tab"),function(b){b.setAttribute("aria-selected",b.dataset.tab===t?"true":"false")});
+    render();
+  }
+  function render(){ if(tab==="res"&&isAdmin)renderRes(); else renderForm(); }
+
+  db=ENDPOINT.indexOf("http")===0;
+  try{uid=localStorage.getItem("xt-id")}catch(e){}
+  if(!uid){uid="r"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem("xt-id",uid)}catch(e){}}
+  render();
+})();
+</script>
+</body></html>
